@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Breathing Edges",
-    "version": "1.0",
+    "version": "2.0",
     "description": "Adds \"breathing\" edges to active webpages",
 
     "browser_action": {
@@ -11,8 +11,17 @@
 
     "permissions": [
         "storage",
+        "tabs",
         "activeTab"
     ],
+
+    "background": {
+      "scripts": ["background.js"]
+    },
+
+    "externally_connectable": {
+      "matches": ["https://marco-mm.github.io/bluetoothEdges/"]
+    },
 
     "content_scripts": [ {
         "matches": [ "<all_urls>" ],

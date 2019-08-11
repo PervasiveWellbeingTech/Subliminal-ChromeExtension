@@ -35,9 +35,9 @@
             </div>
         </div>
 
-        <hr class="sep" section="INTERVAL">
+        <hr class="sep" section="TARGET">
         <div class="item">
-            <label>INTERVAL (s)</label>
+            <label>BREATHS PER MINUTE</label>
             <input type="text" id="breathingInterval" />
         </div>
 
@@ -48,6 +48,20 @@
                 <input class="visibility" type="checkbox">
                 <span class="slider"></span>
             </label>
+        </div>
+
+        <hr class="sep" section="BLUETOOTH">
+
+        <div class="item">
+            <label>ADAPTIVE MODE</label>
+            <label id="bt_switch" class="switch">
+                <input id="bt_input" type="checkbox">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div>
+            <label>CONNECTED TO:</label>
+            <p id="BTDevice" style="display:none">DummyBTName</p>
         </div>
 
         <hr class="sep" section="">

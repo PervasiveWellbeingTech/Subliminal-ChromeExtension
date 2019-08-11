@@ -18,24 +18,32 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 // update all options
 function update()
 {
+    console.log("Updating edges")
     // alert("in update");
     chrome.storage.sync.get({
         enabled: false,
-        color: "",
+        color: "#0080FF",
         opacity: 1.0,
-        interval: -1
+        interval: -1,
+        adaptive: false
     }, function(items) {
         var divs = document.body.querySelectorAll("#breathebox"); // check if there's already a box
         if (divs.length < 1 && items.enabled)
         {
-            var div = document.createElement("div"); 
-            div.setAttribute("id", "breathebox"); 
+            var div = document.createElement("div");
+            div.setAttribute("id", "breathebox");
             document.body.insertBefore(div, document.body.firstChild);
         }
         else if (divs.length > 0 && !items.enabled)
         {
-            var div = document.getElementById("breathebox"); 
-            div.remove();
+            var div = document.getElementById("breathebox");
+            // set timer
+            div.setAttribute('style',
+              "animation: \n" +
+                "breathe cubic-bezier(.5,.1,.3,1) " + items.interval + "s 1,\n" +
+                "fadeOut " + items.interval + "s 1 forwards;");
+            // end timer
+            //div.remove();
         }
 
         // update color and opacity
@@ -54,13 +62,47 @@ function update()
                               "inset 0px 0px 40px "   + hex_to_rgba(items.color, items.opacity) + ", \n" +
                               "inset -0px -0px 40px " + hex_to_rgba(items.color, items.opacity) + "; } \n" +
 
-                              "}\n";
+                              "}\n" +
+                              "@keyframes fadeIn { \n" +
+                              /*"0% { box-shadow: \n" +
+                              "inset 0px 0px 0px" + hex_to_rgba(items.color, items.opacity) + ", \n" +
+                              "inset -0px -0px 0px " + hex_to_rgba(items.color, items.opacity) + "; } \n" +
+                              */
+
+                              "0% { box-shadow: \n" +
+                              "inset 0px 0px 0px "   + hex_to_rgba(items.color, items.opacity) + ", \n" +
+                              "inset -0px -0px 0px " + hex_to_rgba(items.color, items.opacity) + "; } \n" +
+
+                              "100% { box-shadow: \n" +
+                              "inset 0px 0px 80px "   + hex_to_rgba(items.color, items.opacity) + ", \n" +
+                              "inset -0px -0px 80px " + hex_to_rgba(items.color, items.opacity) + "; } \n" +
+
+                              "}\n" +
+                              "@keyframes fadeOut { \n" +
+                              /*"0% { box-shadow: \n" +
+                              "inset 0px 0px 40px "   + hex_to_rgba(items.color, items.opacity) + ", \n" +
+                              "inset -0px -0px 40px " + hex_to_rgba(items.color, items.opacity) + "; } \n" +
+                              */
+
+                              "0% { box-shadow: \n" +
+                              "inset 0px 0px 80px "   + hex_to_rgba(items.color, items.opacity) + ", \n" +
+                              "inset -0px -0px 80px " + hex_to_rgba(items.color, items.opacity) + "; } \n" +
+
+                              "100% { box-shadow: \n" +
+                              "inset 0px 0px 0px "   + hex_to_rgba(items.color, items.opacity) + ", \n" +
+                              "inset -0px -0px 0px " + hex_to_rgba(items.color, items.opacity) + "; } \n" +
+
+                              "}\n"
+
+                              ;
         }
 
         if (items.enabled)
         {
-            document.getElementById("breathebox").setAttribute('style', 
-              "animation: breathe infinite cubic-bezier(.5,.1,.3,1) " + items.interval + "s;");
+            document.getElementById("breathebox").setAttribute('style',
+              "animation: \n" +
+                "fadeIn " + items.interval/2 + "s,\n" +
+                "breathe " + items.interval + "s " + "infinite " + items.interval + "s cubic-bezier(.5,.1,.3,1) forwards;");
         }
     });
 }
@@ -71,13 +113,13 @@ function unfocus()
     var divs = document.body.querySelectorAll("#breathebox");
     if (divs.length > 0)
     {
-        var div = document.getElementById("breathebox"); 
+        var div = document.getElementById("breathebox");
         div.remove();
     }
 }
 
 // helper function for updating color and opacity
-function hex_to_rgba(hex_val, opacity) 
+function hex_to_rgba(hex_val, opacity)
 {
     var r = parseInt(hex_val.slice(1, 3), 16);
     var g = parseInt(hex_val.slice(3, 5), 16);

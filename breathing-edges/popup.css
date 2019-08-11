@@ -1,11 +1,11 @@
-body 
+body
 {
     width: 275px;
     color: #666;
 }
 
 /* title */
-.title 
+.title
 {
     color: #666;
     text-align: center;
@@ -17,14 +17,14 @@ body
 }
 
 /* labels */
-.item 
+.item
 {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.item label 
+.item label
 {
     font-size: 1em;
     font-weight: 400;
@@ -33,17 +33,17 @@ body
 }
 
 /* separators */
-.sep 
+.sep
 {
-    line-height: .7em;
+    line-height: 1em;
     position: relative;
     outline: 0;
     border: 0;
     text-align: center;
-    height: .7em;
+    height: 1.2em;
 }
 
-.sep:before 
+.sep:before
 {
     content: '';
     background-color: #ccc;
@@ -54,23 +54,24 @@ body
     height: 1px;
 }
 
-.sep:after 
+.sep:after
 {
     content: attr(section);
     position: relative;
     display: inline-block;
     color: black;
-    padding: 0 .3em 0 .5em;
+    padding: 0em .3em 0 .5em;
     line-height: 1em;
     font-size: .7em;
     font-weight: 100;
     letter-spacing: .2em;
     color: #888;
     background-color: #fff;
+    overflow: visible; /* sketchy fix*/
 }
 
 /* toggle switch / checkbox */
-.switch 
+.switch
 {
     position: relative;
     display: inline-block;
@@ -78,12 +79,12 @@ body
     height: 34px;
 }
 
-.switch input 
+.switch input
 {
     display: none;
 }
 
-.slider 
+.slider
 {
     position: absolute;
     cursor: pointer;
@@ -92,12 +93,12 @@ body
     right: 0;
     bottom: 0;
     border-radius: 34px;
-    background-color: #ccc;
+    background-color: #ccc; /*background of slider*/
     -webkit-transition: .3s ease-out;
     transition: .3s ease-out;
 }
 
-.slider:before 
+.slider:before
 {
     position: absolute;
     content: "";
@@ -111,17 +112,23 @@ body
     transition: .3s ease-out;
 }
 
+label[id="bt_switch"] input:checked + .slider
+{
+  background-color: DodgerBlue;
+}
+
 /* note: this is commented out since the previous javascript wouldn't bind to the popup*/
 /*input:checked + .slider {
     background-color: #2196F3;
 }*/
 
-input:checked + .slider:before 
+input:checked + .slider:before
 {
     -webkit-transform: translateX(26px);
     -ms-transform: translateX(26px);
     transform: translateX(26px);
 }
+
 
 /* color picker */
 .color-picker-wrapper
@@ -129,7 +136,9 @@ input:checked + .slider:before
     float: left;
     height: 28px;
     width: 50px;
-    border: 0;
+    border-style: solid ;
+    border-width: 1px;
+    border-color: #ccc;
     border-radius: 5px;
     margin: 4px 0;
     transition: .3s ease-out;
@@ -143,7 +152,7 @@ input:checked + .slider:before
 }
 
 /* color input text box */
-input#colorBox 
+input#colorBox
 {
     height: 28px;
     font-size: 1em;
@@ -157,14 +166,14 @@ input#colorBox
 }
 
 /* opacity range slider */
-.range-slider-container 
+.range-slider-container
 {
     position: relative;
     top: 4px;
     left: 0;
 }
 
-input[type=range] 
+input[type=range]
 {
     -webkit-appearance: none;
     width: 150px;
@@ -173,7 +182,7 @@ input[type=range]
     border-radius: 5px;
 }
 
-#range-value-bar 
+#range-value-bar
 {
     width: 150px;
     background-color: #ccc;
@@ -188,29 +197,29 @@ input[type=range]
     pointer-events: none;
 }
 
-input[type=range]:focus 
+input[type=range]:focus
 {
     outline: none;
 }
 
-input[type=range]::-webkit-slider-runnable-track 
+input[type=range]::-webkit-slider-runnable-track
 {
     width: 100%;
     height: 30px;
     cursor: pointer;
     background: #fff;
     border-radius: 5px;
-  
+
     background-image:
-        linear-gradient(45deg, #bbb 25%, transparent 25%), 
-        linear-gradient(-45deg, #bbb 25%, transparent 25%), 
-        linear-gradient(45deg, transparent 75%, #bbb 75%), 
+        linear-gradient(45deg, #bbb 25%, transparent 25%),
+        linear-gradient(-45deg, #bbb 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #bbb 75%),
         linear-gradient(-45deg, transparent 75%, #bbb 75%);
     background-size: 20px 20px;
     background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
 }
 
-input[type=range]::-webkit-slider-thumb 
+input[type=range]::-webkit-slider-thumb
 {
     border: 3px solid #FFF;
     height: 30px;
@@ -223,7 +232,7 @@ input[type=range]::-webkit-slider-thumb
 }
 
 /* breathing interval input text box */
-input#breathingInterval 
+input#breathingInterval
 {
     height: 28px;
     font-size: 1em;
@@ -252,7 +261,7 @@ a
 }
 
 /* help button */
-.help 
+.help
 {
     border-radius: 100%;
     width: 1.5em;

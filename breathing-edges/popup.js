@@ -1,17 +1,28 @@
 'use strict';
 
+
 // update enable checkbox
-function check_enable(e)
+var check_enable = function check_enable(e)
 {
     // store value
     chrome.storage.sync.set({
         enabled: this.checked
     }, update_status);
-
     // update page
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         chrome.tabs.sendMessage(tabs[0].id, {todo: "update"});
     });
+}
+
+function check_BTenable(e)
+{
+  chrome.storage.sync.set({
+      adaptive: this.checked
+  }, update_status);
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, {todo: "update"});
+  });
+  chrome.tabs.create({url:"https://marco-mm.github.io/bluetoothEdges/"})
 }
 
 // update color picker
@@ -126,15 +137,16 @@ function check_visibility(e)
 }
 
 // restore options when popup is opened
-function restore_options() 
+function restore_options()
 {
-    // Defaults to disabled
+    // Defaults to enabled
     chrome.storage.sync.get({
-        enabled: false,
-        color: "",
+        enabled: true,
+        color: "#0080FF",
         opacity: 1.0,
-        interval: 4,
-        visibility: false
+        interval: 5,
+        visibility: true,
+        adaptive: false
     }, function(items) {
         // update values
         document.querySelector(".enable").checked = items.enabled;
@@ -183,7 +195,7 @@ var visibility_style = document.createElement('style');
 document.addEventListener('DOMContentLoaded', function () {
     // restore previous options
     restore_options();
-    
+
     // add listeners
     var enable_check = document.querySelector(".enable");
     enable_check.addEventListener('click', check_enable);
@@ -198,12 +210,27 @@ document.addEventListener('DOMContentLoaded', function () {
     var visibility_check = document.querySelector(".visibility");
     visibility_check.addEventListener('click', check_visibility);
 
+    //var enable_BTslider = document.querySelector(".BTenable");
+    //enable_BTslider.addEventListener('click', check_BTenable)
+
+    var bluetooth_on = document.getElementById('bt_input');
+    bluetooth_on.addEventListener('click', check_BTenable);
+
     document.body.appendChild(color_style);
     document.body.appendChild(visibility_style);
-    
+
     // initial update of page
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         chrome.tabs.sendMessage(tabs[0].id, {todo: "update"});
     });
-});
+    /*
+    chrome.runtime.onMessage.addListener(
+      function(request, sender, sendResponse) {
+        if (request.msg == "activate")
+            console.log("activating edges")
+            this.check_enable();
+        }
+    );
+    */
 
+});
