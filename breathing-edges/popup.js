@@ -22,7 +22,7 @@ function check_BTenable(e)
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
       chrome.tabs.sendMessage(tabs[0].id, {todo: "update"});
   });
-  chrome.tabs.create({url:"https://marco-mm.github.io/bluetoothEdges/"})
+  chrome.tabs.create({url:"https://pervasivewellbeingtech.github.io/Subliminal-ChromeExtension-BTHubWebsite/"})
 }
 
 // update color picker
