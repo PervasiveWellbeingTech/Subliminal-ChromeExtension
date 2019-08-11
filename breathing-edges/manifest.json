@@ -20,7 +20,7 @@
     },
 
     "externally_connectable": {
-      "matches": ["https://marco-mm.github.io/bluetoothEdges/"]
+      "matches": ["https://pervasivewellbeingtech.github.io/Subliminal-ChromeExtension-BTHubWebsite/"]
     },
 
     "content_scripts": [ {
