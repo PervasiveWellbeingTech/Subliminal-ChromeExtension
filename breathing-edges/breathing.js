@@ -40,9 +40,11 @@ function update()
             // set timer
             div.setAttribute('style',
               "animation: \n" +
-                "breathe cubic-bezier(.5,.1,.3,1) " + items.interval + "s 1,\n" +
-                "fadeOut " + items.interval + "s 1 forwards;");
+                //"breathe " + items.interval + "s cubic-bezier(.5,.1,.3,1) 2;\n" + //;");
+                "fadeOut " + 3 + "s forwards;");
+                // ----[first time: duration] ---- [second time: delay]---
             // end timer
+            setTimeOut(div.remove(), 100);
             //div.remove();
         }
 
@@ -64,29 +66,21 @@ function update()
 
                               "}\n" +
                               "@keyframes fadeIn { \n" +
-                              /*"0% { box-shadow: \n" +
-                              "inset 0px 0px 0px" + hex_to_rgba(items.color, items.opacity) + ", \n" +
-                              "inset -0px -0px 0px " + hex_to_rgba(items.color, items.opacity) + "; } \n" +
-                              */
 
                               "0% { box-shadow: \n" +
                               "inset 0px 0px 0px "   + hex_to_rgba(items.color, items.opacity) + ", \n" +
                               "inset -0px -0px 0px " + hex_to_rgba(items.color, items.opacity) + "; } \n" +
 
                               "100% { box-shadow: \n" +
-                              "inset 0px 0px 80px "   + hex_to_rgba(items.color, items.opacity) + ", \n" +
-                              "inset -0px -0px 80px " + hex_to_rgba(items.color, items.opacity) + "; } \n" +
+                              "inset 0px 0px 40px "   + hex_to_rgba(items.color, items.opacity) + ", \n" +
+                              "inset -0px -0px 40px " + hex_to_rgba(items.color, items.opacity) + "; } \n" +
 
                               "}\n" +
                               "@keyframes fadeOut { \n" +
-                              /*"0% { box-shadow: \n" +
-                              "inset 0px 0px 40px "   + hex_to_rgba(items.color, items.opacity) + ", \n" +
-                              "inset -0px -0px 40px " + hex_to_rgba(items.color, items.opacity) + "; } \n" +
-                              */
 
                               "0% { box-shadow: \n" +
-                              "inset 0px 0px 80px "   + hex_to_rgba(items.color, items.opacity) + ", \n" +
-                              "inset -0px -0px 80px " + hex_to_rgba(items.color, items.opacity) + "; } \n" +
+                              "inset 0px 0px 60px "   + hex_to_rgba(items.color, items.opacity) + ", \n" +
+                              "inset -0px -0px 60px " + hex_to_rgba(items.color, items.opacity) + "; } \n" +
 
                               "100% { box-shadow: \n" +
                               "inset 0px 0px 0px "   + hex_to_rgba(items.color, items.opacity) + ", \n" +
@@ -101,8 +95,10 @@ function update()
         {
             document.getElementById("breathebox").setAttribute('style',
               "animation: \n" +
-                "fadeIn " + items.interval/2 + "s,\n" +
-                "breathe " + items.interval + "s " + "infinite " + items.interval + "s cubic-bezier(.5,.1,.3,1) forwards;");
+                // seconds here means duration of fadeIn effect
+                "fadeIn " + 3 + "s,\n" +
+                // first time: duration of interval // second time: start delay (should be same as duration of fadeIn)
+                "breathe " + items.interval + "s infinite " + 3 + "s cubic-bezier(.5,.1,.3,1);");
         }
     });
 }
