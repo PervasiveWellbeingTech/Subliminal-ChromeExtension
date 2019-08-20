@@ -44,7 +44,7 @@ function update()
                 "fadeOut " + 3 + "s forwards;");
                 // ----[first time: duration] ---- [second time: delay]---
             // end timer
-            setTimeOut(div.remove(), 100);
+            setTimeout(div.remove(), 100);
             //div.remove();
         }
 
