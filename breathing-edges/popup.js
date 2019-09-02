@@ -2,7 +2,7 @@
 
 
 // update enable checkbox
-var check_enable = function check_enable(e)
+function check_enable(e)
 {
     // store value
     chrome.storage.sync.set({
@@ -16,14 +16,47 @@ var check_enable = function check_enable(e)
 
 function check_BTenable(e)
 {
+  console.log(this.checked);
   chrome.storage.sync.set({
       adaptive: this.checked
   }, update_status);
+  // update page
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
       chrome.tabs.sendMessage(tabs[0].id, {todo: "update"});
   });
-  chrome.tabs.create({url:"https://pervasivewellbeingtech.github.io/Subliminal-ChromeExtension-BTHubWebsite/"})
+  chrome.storage.sync.get(['enabled','adaptive'], function(result) {
+    if(result.adaptive){
+      //console.log("Create tab");
+      chrome.tabs.create({url:"https://pervasivewellbeingtech.github.io/Subliminal-ChromeExtension-BTHubWebsite/"});
+    }
+  });
+/*
+  chrome.storage.sync.get(['enabled','adaptive'], function(result) {
+    console.log(result.adaptive);
+    if(result.adaptive){
+      chrome.storage.sync.set({
+          adaptive: true
+      }, update_status);
+
+      chrome.tabs.query({active: true}, function(tabs) {
+          chrome.tabs.sendMessage(tabs[0].id, {todo: "update"});
+      });
+
+    } else {
+      chrome.storage.sync.set({
+          adaptive: false
+      }, update_status);
+
+      chrome.tabs.query({active: true}, function(tabs) {
+          chrome.tabs.sendMessage(tabs[0].id, {todo: "update"});
+      });
+
+      chrome.tabs.create({url:"https://pervasivewellbeingtech.github.io/Subliminal-ChromeExtension-BTHubWebsite/"});
+    }
+  });
+  */
 }
+
 
 // update color picker
 function change_color(e)
@@ -100,11 +133,13 @@ function change_interval(e)
     var reg = /^(\d+\.?\d*|\.\d+)$/;
     if (reg.exec(this.value)) // check for valid text input
     {
-        var decimal_val = this.value;
-
+        // Input = 6 second interval
+        // BPM = ~10
+        var bpm_val = this.value;
+        var interval_val = 60 / bpm_val;
         // store value
         chrome.storage.sync.set({
-            interval: decimal_val
+            interval: interval_val
         }, update_status);
 
         // update page
@@ -141,10 +176,10 @@ function restore_options()
 {
     // Defaults to enabled
     chrome.storage.sync.get({
-        enabled: true,
+        enabled: false,
         color: "#0080FF",
         opacity: 1.0,
-        interval: 5,
+        interval: 4,
         visibility: true,
         adaptive: false
     }, function(items) {
@@ -153,8 +188,10 @@ function restore_options()
         document.querySelector(".color-picker").value = items.color;
         document.getElementById("colorBox").value = items.color;
         document.querySelector("input[type=range]").value = items.opacity*100;
-        document.getElementById("breathingInterval").value = items.interval;
+        document.getElementById("breathingInterval").value = 60/items.interval;
         document.querySelector(".visibility").checked = items.visibility;
+        //
+        document.getElementById("bt_switch").checked = items.adaptive;
 
         // update styles
         document.querySelector(".color-picker-wrapper").style.backgroundColor = items.color;
@@ -162,6 +199,7 @@ function restore_options()
         color_style.innerHTML = ".color input:checked + .slider {background-color: " + items.color + ";}";
         document.querySelector('#range-value-bar').style.background = items.color;
         document.querySelector('#range-value-bar').style.setProperty('opacity', items.opacity);
+        //
         if (items.visibility)
         {
             visibility_style.innerHTML = ".slider {box-shadow: 0 0 3px 1px rgba(0, 0, 0, .15);}\n" +

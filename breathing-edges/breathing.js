@@ -40,11 +40,11 @@ function update()
             // set timer
             div.setAttribute('style',
               "animation: \n" +
-                //"breathe " + items.interval + "s cubic-bezier(.5,.1,.3,1) 2;\n" + //;");
-                "fadeOut " + 3 + "s forwards;");
+                //"breathe " + items.interval + "s cubic-bezier(.5,.1,.3,1) 2,\n" + //;");
+                "fadeOut " + 2 + "s;");
                 // ----[first time: duration] ---- [second time: delay]---
             // end timer
-            setTimeout(div.remove(), 100);
+            setTimeout(div.remove, 1000);
             //div.remove();
         }
 
@@ -79,15 +79,14 @@ function update()
                               "@keyframes fadeOut { \n" +
 
                               "0% { box-shadow: \n" +
-                              "inset 0px 0px 60px "   + hex_to_rgba(items.color, items.opacity) + ", \n" +
-                              "inset -0px -0px 60px " + hex_to_rgba(items.color, items.opacity) + "; } \n" +
+                              "inset 0px 0px 50px "   + hex_to_rgba(items.color, items.opacity) + ", \n" +
+                              "inset -0px -0px 50px " + hex_to_rgba(items.color, items.opacity) + "; } \n" +
 
                               "100% { box-shadow: \n" +
                               "inset 0px 0px 0px "   + hex_to_rgba(items.color, items.opacity) + ", \n" +
                               "inset -0px -0px 0px " + hex_to_rgba(items.color, items.opacity) + "; } \n" +
 
                               "}\n"
-
                               ;
         }
 
@@ -96,8 +95,8 @@ function update()
             document.getElementById("breathebox").setAttribute('style',
               "animation: \n" +
                 // seconds here means duration of fadeIn effect
-                "fadeIn " + 3 + "s,\n" +
-                // first time: duration of interval // second time: start delay (should be same as duration of fadeIn)
+                "fadeIn " + 3 + "s, \n" +
+                // first time value: duration of interval // second time: start delay (should be same as duration of fadeIn)
                 "breathe " + items.interval + "s infinite " + 3 + "s cubic-bezier(.5,.1,.3,1);");
         }
     });
