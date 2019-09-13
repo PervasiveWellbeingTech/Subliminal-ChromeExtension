@@ -96,7 +96,7 @@ function update()
               "animation: \n" +
                 // seconds here means duration of fadeIn effect
                 "fadeIn " + 3 + "s, \n" +
-                // first time value: duration of interval // second time: start delay (should be same as duration of fadeIn)
+                // first time value: duration of interval // second time value: start delay (should be same as duration of fadeIn)
                 "breathe " + items.interval + "s infinite " + 3 + "s cubic-bezier(.5,.1,.3,1);");
         }
     });

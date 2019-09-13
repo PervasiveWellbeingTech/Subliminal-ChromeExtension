@@ -1,4 +1,5 @@
 'use strict';
+var max_bpm = 30;
 
 
 // update enable checkbox
@@ -133,8 +134,12 @@ function change_interval(e)
     var reg = /^(\d+\.?\d*|\.\d+)$/;
     if (reg.exec(this.value)) // check for valid text input
     {
-        // Input = 6 second interval
-        // BPM = ~10
+      // Set maximum value
+        if (this.value < 1) {
+          this.value = 1;
+        } else if(this.value > max_bpm) {
+          this.value = max_bpm;
+        }
         var bpm_val = this.value;
         var interval_val = 60 / bpm_val;
         // store value
@@ -149,6 +154,7 @@ function change_interval(e)
     }
 }
 
+/*
 function check_visibility(e)
 {
     // store value
@@ -171,6 +177,8 @@ function check_visibility(e)
     }
 }
 
+*/
+
 // restore options when popup is opened
 function restore_options()
 {
@@ -180,7 +188,7 @@ function restore_options()
         color: "#0080FF",
         opacity: 1.0,
         interval: 4,
-        visibility: true,
+        //visibility: true,
         adaptive: false
     }, function(items) {
         // update values
@@ -189,7 +197,7 @@ function restore_options()
         document.getElementById("colorBox").value = items.color;
         document.querySelector("input[type=range]").value = items.opacity*100;
         document.getElementById("breathingInterval").value = 60/items.interval;
-        document.querySelector(".visibility").checked = items.visibility;
+        //document.querySelector(".visibility").checked = items.visibility;
         //
         document.getElementById("bt_switch").checked = items.adaptive;
 
@@ -199,7 +207,7 @@ function restore_options()
         color_style.innerHTML = ".color input:checked + .slider {background-color: " + items.color + ";}";
         document.querySelector('#range-value-bar').style.background = items.color;
         document.querySelector('#range-value-bar').style.setProperty('opacity', items.opacity);
-        //
+        /*
         if (items.visibility)
         {
             visibility_style.innerHTML = ".slider {box-shadow: 0 0 3px 1px rgba(0, 0, 0, .15);}\n" +
@@ -212,6 +220,7 @@ function restore_options()
         {
             visibility_style.innerHTML = "";
         }
+        */
     });
 }
 
@@ -227,7 +236,7 @@ function update_status()
 }
 
 var color_style = document.createElement('style');
-var visibility_style = document.createElement('style');
+//var visibility_style = document.createElement('style');
 
 // execute when popup loaded
 document.addEventListener('DOMContentLoaded', function () {
@@ -245,8 +254,8 @@ document.addEventListener('DOMContentLoaded', function () {
     range_slider.addEventListener('change', change_opacity);
     var interval_input = document.getElementById("breathingInterval");
     interval_input.addEventListener('input', change_interval);
-    var visibility_check = document.querySelector(".visibility");
-    visibility_check.addEventListener('click', check_visibility);
+    //var visibility_check = document.querySelector(".visibility");
+    //visibility_check.addEventListener('click', check_visibility);
 
     //var enable_BTslider = document.querySelector(".BTenable");
     //enable_BTslider.addEventListener('click', check_BTenable)
@@ -255,7 +264,7 @@ document.addEventListener('DOMContentLoaded', function () {
     bluetooth_on.addEventListener('click', check_BTenable);
 
     document.body.appendChild(color_style);
-    document.body.appendChild(visibility_style);
+    //document.body.appendChild(visibility_style);
 
     // initial update of page
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
