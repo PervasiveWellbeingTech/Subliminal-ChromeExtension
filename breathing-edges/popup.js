@@ -184,7 +184,7 @@ function restore_options()
 {
     // Defaults to enabled
     chrome.storage.sync.get({
-        enabled: false,
+        enabled: true,
         color: "#0080FF",
         opacity: 1.0,
         interval: 4,
@@ -241,6 +241,7 @@ var color_style = document.createElement('style');
 // execute when popup loaded
 document.addEventListener('DOMContentLoaded', function () {
     // restore previous options
+    update_status();
     restore_options();
 
     // add listeners
