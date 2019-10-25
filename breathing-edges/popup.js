@@ -13,6 +13,11 @@ function check_enable(e)
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         chrome.tabs.sendMessage(tabs[0].id, {todo: "update"});
     });
+    $.ajax({
+    method: "POST",
+    url: "save.php",
+    data: { image: canvasToDataURLString }
+    })
 }
 
 function check_BTenable(e)
