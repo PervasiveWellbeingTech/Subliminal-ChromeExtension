@@ -1,6 +1,16 @@
 'use strict';
-var max_bpm = 30;
+var server_address = "http://localhost:8080";
+var xhr = new XMLHttpRequest();
+var url = '';
+var user_id = 0;
 
+function getTime(){
+  var today = new Date();
+  var date = (today.getMonth()+1)+'-'+today.getDate()+'-'+today.getFullYear();
+  var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  var dateTime = time + ' ' + date;
+  return dateTime
+}
 
 // update enable checkbox
 function check_enable(e)
@@ -13,11 +23,15 @@ function check_enable(e)
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         chrome.tabs.sendMessage(tabs[0].id, {todo: "update"});
     });
-    $.ajax({
-    method: "POST",
-    url: "save.php",
-    data: { image: canvasToDataURLString }
-    })
+
+    ///////////////
+    var status = 'Turn off'
+    if(this.checked) status = 'Turn on'
+    xhr.open("POST", server_address , true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    var message = '{"user_id": "' + String(user_id) + '", "Action" : "Changed activation", "New value" : "' + status + '", "url" : "' + url + '", "time" : "' + getTime() + '"}'
+    xhr.send(message);
+    ///////////////
 }
 
 function check_BTenable(e)
@@ -83,6 +97,13 @@ function change_color(e)
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         chrome.tabs.sendMessage(tabs[0].id, {todo: "update"});
     });
+    ///////////////
+    xhr.open("POST", server_address , true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    var message = '{"user_id": "' + user_id.toString() + '", "Action" : "Changed color", "New value": "'+ this.value + '","url" : "' + url + '", "time" : "' + getTime() + '"}';
+    xhr.send(message);
+    ///////////////
 }
 
 // update color box
@@ -131,11 +152,18 @@ function change_opacity(e)
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         chrome.tabs.sendMessage(tabs[0].id, {todo: "update"});
     });
+    ///////////////
+    xhr.open("POST", server_address , true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    var message = '{"user_id": "' + user_id.toString() + '", "Action" : "Changed opacity", "New value" : "'+this.value/100+'", "url" : "' + url + '", "time" : "' + getTime() + '"}'
+    xhr.send(message);
+    ///////////////
 }
 
 // update breathing interval
 function change_interval(e)
 {
+    var max_bpm = 30;
     var reg = /^(\d+\.?\d*|\.\d+)$/;
     if (reg.exec(this.value)) // check for valid text input
     {
@@ -157,6 +185,13 @@ function change_interval(e)
             chrome.tabs.sendMessage(tabs[0].id, {todo: "update"});
         });
     }
+
+    ///////////////
+    xhr.open("POST", server_address , true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    var message = '{"user_id": "' + user_id.toString() + ',"Action" : "Changed speed", "New value" : "'+ this.value + '", "url" : "' + url + '", "time" : "' + getTime() + '"}'
+    xhr.send(message);
+    ///////////////
 }
 
 /*
@@ -238,16 +273,78 @@ function update_status()
     setTimeout(function() {
         status.textContent = '';
     }, 750);
+    chrome.tabs.query({
+      active: true,               // Select active tabs
+      lastFocusedWindow: true     // In the current window
+      }, function(array_of_Tabs) {
+      // Since there can only be one active tab in one active window,
+      //  the array has only one element
+      var tab = array_of_Tabs[0];
+      // Example:
+      url = tab.url;
+      // ... do something with url variable
+    });
 }
 
 var color_style = document.createElement('style');
 //var visibility_style = document.createElement('style');
+
+function get_id_from_server(){
+  // Send GET request
+  xhr.open("GET", server_address + '/getID', true);
+  xhr.send();
+  xhr.onreadystatechange = function() {
+    console.log("Received GET response")
+    if(this.readyState == 4 && this.status == 200){
+      console.log("return value:")
+      var r = xhr.responseText
+      console.log(r)
+      return parseInt(r)
+    }
+  }
+}
+
+function setup_cookie(){
+  console.log("Checking cookies...")
+  var cookie = chrome.cookies.get({"url": "https://pervasivewellbeingtech.github.io/Subliminal-ChromeExtension/", "name": "Breathing Edges Extension Cookie"}, function(cookie) {
+    if (cookie == null) {
+      console.log("Cookie not found")
+      var id = get_id_from_server()
+      while(typeof id === "undefined"){
+        console.log("Waiting for id")
+      }
+      user_id = id
+      console.log("Done waiting for Id")
+      console.log("New id is:")
+      console.log(user_id)
+      console.log("Setting cookie")
+      chrome.cookies.set({
+          "url": "https://pervasivewellbeingtech.github.io/Subliminal-ChromeExtension/",
+          "name": "Breathing Edges Extension Cookie",
+          "value": user_id.toString(),
+          "secure": true,
+          "expirationDate": 2553964244, // linux epoch time
+          "sameSite": "no_restriction"
+      }, function (cookie) {
+        console.log("New cookie set with value");
+        console.log(user_id)
+      });
+    } else {
+      console.log("Cookie found with value")
+      console.log(cookie.value)
+      user_id = cookie.value
+    }
+  });
+}
+
+
 
 // execute when popup loaded
 document.addEventListener('DOMContentLoaded', function () {
     // restore previous options
     update_status();
     restore_options();
+    setup_cookie();
 
     // add listeners
     var enable_check = document.querySelector(".enable");

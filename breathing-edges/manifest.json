@@ -10,9 +10,12 @@
     },
 
     "permissions": [
+        "cookies",
+        "https://pervasivewellbeingtech.github.io/Subliminal-ChromeExtension/",
         "storage",
         "tabs",
-        "activeTab"
+        "activeTab",
+        "http://localhost:8080/"
     ],
 
     "background": {
