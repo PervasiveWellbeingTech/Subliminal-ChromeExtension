@@ -1,10 +1,10 @@
 'use strict';
 var server_address = "http://localhost:8080";
-var xhr = new XMLHttpRequest();
 var url = '';
-var user_id = 0;
+var user_id = null;
 
-function getTime(){
+function getTime()
+{
   var today = new Date();
   var date = (today.getMonth()+1)+'-'+today.getDate()+'-'+today.getFullYear();
   var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
@@ -12,26 +12,27 @@ function getTime(){
   return dateTime
 }
 
+function send_server_update(action, status)
+{
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", server_address , true);
+  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  var message = '{"user_id": "' + String(user_id) + '", "Action" : "' + action + '", "New value" : "' + status + '", "url" : "' + url + '", "time" : "' + getTime() + '"}'
+  xhr.send(message);
+}
+
 // update enable checkbox
 function check_enable(e)
 {
-    // store value
-    chrome.storage.sync.set({
-        enabled: this.checked
-    }, update_status);
-    // update page
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {todo: "update"});
-    });
-
-    ///////////////
-    var status = 'Turn off'
-    if(this.checked) status = 'Turn on'
-    xhr.open("POST", server_address , true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    var message = '{"user_id": "' + String(user_id) + '", "Action" : "Changed activation", "New value" : "' + status + '", "url" : "' + url + '", "time" : "' + getTime() + '"}'
-    xhr.send(message);
-    ///////////////
+  // store value
+  chrome.storage.sync.set({
+      enabled: this.checked
+  }, update_status);
+  // update page
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, {todo: "update"});
+  });
+  send_server_update("Changed activation", this.checked? 'Turn on' : 'Turn off')
 }
 
 function check_BTenable(e)
@@ -98,11 +99,7 @@ function change_color(e)
         chrome.tabs.sendMessage(tabs[0].id, {todo: "update"});
     });
     ///////////////
-    xhr.open("POST", server_address , true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-    var message = '{"user_id": "' + user_id.toString() + '", "Action" : "Changed color", "New value": "'+ this.value + '","url" : "' + url + '", "time" : "' + getTime() + '"}';
-    xhr.send(message);
+    send_server_update("Changed color", this.value)
     ///////////////
 }
 
@@ -153,10 +150,7 @@ function change_opacity(e)
         chrome.tabs.sendMessage(tabs[0].id, {todo: "update"});
     });
     ///////////////
-    xhr.open("POST", server_address , true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    var message = '{"user_id": "' + user_id.toString() + '", "Action" : "Changed opacity", "New value" : "'+this.value/100+'", "url" : "' + url + '", "time" : "' + getTime() + '"}'
-    xhr.send(message);
+    send_server_update("Changed opacity", this.value/100)
     ///////////////
 }
 
@@ -165,7 +159,7 @@ function change_interval(e)
 {
     var max_bpm = 30;
     var reg = /^(\d+\.?\d*|\.\d+)$/;
-    if (reg.exec(this.value)) // check for valid text input
+    if (!isNaN(this.value) && reg.exec(this.value)) // check for valid text input
     {
       // Set maximum value
         if (this.value < 1) {
@@ -173,8 +167,7 @@ function change_interval(e)
         } else if(this.value > max_bpm) {
           this.value = max_bpm;
         }
-        var bpm_val = this.value;
-        var interval_val = 60 / bpm_val;
+        var interval_val = 60 / this.value;
         // store value
         chrome.storage.sync.set({
             interval: interval_val
@@ -184,14 +177,11 @@ function change_interval(e)
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
             chrome.tabs.sendMessage(tabs[0].id, {todo: "update"});
         });
+      ///////////////
+      send_server_update("Changed interval", this.value)
+      ///////////////
     }
 
-    ///////////////
-    xhr.open("POST", server_address , true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    var message = '{"user_id": "' + user_id.toString() + ',"Action" : "Changed speed", "New value" : "'+ this.value + '", "url" : "' + url + '", "time" : "' + getTime() + '"}'
-    xhr.send(message);
-    ///////////////
 }
 
 /*
@@ -224,7 +214,7 @@ function restore_options()
 {
     // Defaults to enabled
     chrome.storage.sync.get({
-        enabled: true,
+        enabled: false,
         color: "#0080FF",
         opacity: 1.0,
         interval: 4,
@@ -247,6 +237,7 @@ function restore_options()
         color_style.innerHTML = ".color input:checked + .slider {background-color: " + items.color + ";}";
         document.querySelector('#range-value-bar').style.background = items.color;
         document.querySelector('#range-value-bar').style.setProperty('opacity', items.opacity);
+
         /*
         if (items.visibility)
         {
@@ -278,74 +269,65 @@ function update_status()
       lastFocusedWindow: true     // In the current window
       }, function(array_of_Tabs) {
       // Since there can only be one active tab in one active window,
-      //  the array has only one element
+      // the array has only one element
       var tab = array_of_Tabs[0];
-      // Example:
       url = tab.url;
-      // ... do something with url variable
     });
 }
 
 var color_style = document.createElement('style');
 //var visibility_style = document.createElement('style');
 
-function get_id_from_server(){
-  // Send GET request
+function set_cookie(callback){
   xhr.open("GET", server_address + '/getID', true);
   xhr.send();
   xhr.onreadystatechange = function() {
     console.log("Received GET response")
     if(this.readyState == 4 && this.status == 200){
       console.log("return value:")
-      var r = xhr.responseText
-      console.log(r)
-      return parseInt(r)
+      var content = xhr.responseText
+      if(content != '') {
+          callback(parseInt(content));
+      } else {
+          callback(null);
+      }
     }
   }
 }
 
-function setup_cookie(){
-  console.log("Checking cookies...")
+function check_cookie(){
   var cookie = chrome.cookies.get({"url": "https://pervasivewellbeingtech.github.io/Subliminal-ChromeExtension/", "name": "Breathing Edges Extension Cookie"}, function(cookie) {
     if (cookie == null) {
-      console.log("Cookie not found")
-      var id = get_id_from_server()
-      while(typeof id === "undefined"){
-        console.log("Waiting for id")
-      }
-      user_id = id
-      console.log("Done waiting for Id")
-      console.log("New id is:")
-      console.log(user_id)
-      console.log("Setting cookie")
-      chrome.cookies.set({
-          "url": "https://pervasivewellbeingtech.github.io/Subliminal-ChromeExtension/",
-          "name": "Breathing Edges Extension Cookie",
-          "value": user_id.toString(),
-          "secure": true,
-          "expirationDate": 2553964244, // linux epoch time
-          "sameSite": "no_restriction"
-      }, function (cookie) {
-        console.log("New cookie set with value");
-        console.log(user_id)
-      });
+      set_cookie(function(id){
+        if(id != null){
+          chrome.cookies.set({
+              "url": "https://pervasivewellbeingtech.github.io/Subliminal-ChromeExtension/",
+              "name": "Breathing Edges Extension Cookie",
+              "value": id.toString(),
+              "secure": true,
+              "expirationDate": 2553964244, // linux epoch time deadline
+              "sameSite": "no_restriction"
+          }, function (cookie) {
+            console.log("New cookie set with value: " + id.toString());
+          });
+        user_id = id
+        }
+      })
     } else {
-      console.log("Cookie found with value")
-      console.log(cookie.value)
+      console.log("Cookie found with value: " + cookie.value.toString())
       user_id = cookie.value
     }
   });
 }
-
-
 
 // execute when popup loaded
 document.addEventListener('DOMContentLoaded', function () {
     // restore previous options
     update_status();
     restore_options();
-    setup_cookie();
-
+    if(user_id == null){
+      check_cookie();
+    }
     // add listeners
     var enable_check = document.querySelector(".enable");
     enable_check.addEventListener('click', check_enable);

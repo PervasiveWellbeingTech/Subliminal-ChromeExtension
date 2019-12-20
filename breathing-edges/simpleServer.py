@@ -19,15 +19,12 @@ class RequestHandler(BaseHTTPRequestHandler):
         print("\n----- Request Start ----->\n")
         print(request_path)
         print(self.headers)
-        print("Received GET request")
-
         print("<----- Request End -----\n")
 
         if request_path == '/getID':
             self.send_response(200)
             self.send_header('Content-type','text/plain')
             self.end_headers()
-            # Send the html message
             self.wfile.write(get_new_user_id())
         else:
             self.send_response(200)
@@ -37,7 +34,7 @@ class RequestHandler(BaseHTTPRequestHandler):
 
         request_path = self.path
 
-        #print("\n----- Request Start ----->\n")
+        print("\n----- Request Start ----->\n")
         #print(request_path)
 
         request_headers = self.headers
