@@ -4,7 +4,7 @@ Google Chrome extension that regulates breathing through entrainment. When activ
 
 ## Getting Started
 
-The extension is available for download on the Google Chrome store through the following [link] (https://chrome.google.com/webstore/detail/breathing-edges/bfdgeibniodkfndpedigokbjkffoaboc?fbclid=IwAR2xAAuKU682uMxKVfOiMegXmB47ibh72AprPQ61DGwR8LritvmorKvHkD0)
+The extension is available for download on the Google Chrome store through the following [link](https://chrome.google.com/webstore/detail/breathing-edges/bfdgeibniodkfndpedigokbjkffoaboc?fbclid=IwAR2xAAuKU682uMxKVfOiMegXmB47ibh72AprPQ61DGwR8LritvmorKvHkD0)
 
 For development purposes, you can clone this repository to your local machine, make changes, and then follow the instructions on the official [Google Chrome Extension documentation site](https://developer.chrome.com/extensions/getstarted) to test in your browser.
 
@@ -17,6 +17,6 @@ This project requires an updated version of the Google Chrome browser. You can d
 
 ## Authors
 
-* Developed under the [**Pervasive Wellbeing Technology Lab**](http://med.stanford.edu/pervasivewellbeingtech.html)
+Developed under the [**Pervasive Wellbeing Technology Lab**](http://med.stanford.edu/pervasivewellbeingtech.html)
 * **Jonathan Burkle** - *Initial setup and development*
 * **Marco Mora-Mendoza** - *Bluetooth link and hub; Server Logging; Bug Fixes*
