@@ -12,7 +12,7 @@ function getTime()
   return dateTime
 }
 
-function send_server_update(action, status)
+function post_server(action, status)
 {
   var xhr = new XMLHttpRequest();
   xhr.open("POST", server_address , true);
@@ -32,7 +32,7 @@ function check_enable(e)
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
       chrome.tabs.sendMessage(tabs[0].id, {todo: "update"});
   });
-  send_server_update("Changed activation", this.checked? 'Turn on' : 'Turn off')
+  post_server("Changed activation", this.checked? 'Turn on' : 'Turn off')
 }
 
 function check_BTenable(e)
@@ -99,7 +99,7 @@ function change_color(e)
         chrome.tabs.sendMessage(tabs[0].id, {todo: "update"});
     });
     ///////////////
-    send_server_update("Changed color", this.value)
+    post_server("Changed color", this.value)
     ///////////////
 }
 
@@ -150,7 +150,7 @@ function change_opacity(e)
         chrome.tabs.sendMessage(tabs[0].id, {todo: "update"});
     });
     ///////////////
-    send_server_update("Changed opacity", this.value/100)
+    post_server("Changed opacity", this.value/100)
     ///////////////
 }
 
@@ -178,7 +178,7 @@ function change_interval(e)
             chrome.tabs.sendMessage(tabs[0].id, {todo: "update"});
         });
       ///////////////
-      send_server_update("Changed interval", this.value)
+      post_server("Changed interval", this.value)
       ///////////////
     }
 

@@ -21,6 +21,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         print(self.headers)
         print("<----- Request End -----\n")
 
+        # Response to id request
         if request_path == '/getID':
             self.send_response(200)
             self.send_header('Content-type','text/plain')
@@ -36,11 +37,9 @@ class RequestHandler(BaseHTTPRequestHandler):
 
         print("\n----- Request Start ----->\n")
         #print(request_path)
-
         request_headers = self.headers
         content_length = request_headers.getheaders('content-length')
         length = int(content_length[0]) if content_length else 0
-
         #print(request_headers)
         print("-------------BODY START----------------")
         body = self.rfile.read(length)
@@ -56,59 +55,57 @@ class RequestHandler(BaseHTTPRequestHandler):
     do_PUT = do_POST
     do_DELETE = do_GET
 
+# Searches user_ids table for largest value plus one
+# Adds this value to user_ids table and returns the value
+# Returns 1 if no ids in table
 def get_new_user_id():
-    conn = sqlite3.connect(database)
-    cur = conn.cursor()
-    cur.execute(''' SELECT MAX(id) FROM user_ids''')
-    last_user_id = cur.fetchone()
-    id = last_user_id[0]
-    if(id == None):
-        id = 1
-    else:
-        id += 1
-    set_user_id(id)
-    cur.close()
-    return id
+    try:
+        conn = sqlite3.connect(database)
+        cur = conn.cursor()
+        cur.execute(''' SELECT MAX(id) FROM user_ids''')
+        last_user_id = cur.fetchone()
+        id = last_user_id[0]
+        if(id == None):
+            id = 1
+        else:
+            id += 1
+        set_user_id(id)
+        cur.close()
+        return id
+    except Error as e:
+        print(e)
 
+# Adds id_num and current time to user_ids table
 def set_user_id(id_num):
-    """
-    Add new user_id into the id table
-    :param act:
-    :return: action id
-    """
-    date = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-    print(date)
-    input_info = (id_num, date)
-    sql = ''' INSERT INTO user_ids(id, date_created)
-              VALUES(?,?) '''
-    conn = sqlite3.connect(database)
-    cur = conn.cursor()
-    cur.execute(sql, input_info)
-    conn.commit()
-    return cur.lastrowid
+    try:
+        date = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+        input_info = (id_num, date)
+        sql = ''' INSERT INTO user_ids(id, date_created)
+                  VALUES(?,?) '''
+        conn = sqlite3.connect(database)
+        cur = conn.cursor()
+        cur.execute(sql, input_info)
+        conn.commit()
+        return cur.lastrowid
+    except Error as e:
+        print(e)
 
-
+# Adds act into activity table
+# act is a tuple of (user_id, action, value, url, time)
 def create_activity(act):
-    """
-    Add new activity into the activity table
-    :param act:
-    :return: action id
-    """
-    sql = ''' INSERT INTO activity(user_id, action, value, url, time)
-              VALUES(?,?,?,?,?) '''
+    try:
+        conn = sqlite3.connect(database)
+        cur = conn.cursor()
+        sql = ''' INSERT INTO activity(user_id, action, value, url, time)
+                  VALUES(?,?,?,?,?) '''
+        cur.execute(sql, act)
+        conn.commit()
+        return cur.lastrowid
+    except Error as e:
+        print(e)
 
-    conn = sqlite3.connect(database)
-    cur = conn.cursor()
-    cur.execute(sql, act)
-    conn.commit()
-    return cur.lastrowid
-
+# Adds table to database from create_table_sql CREATE TABLE statement
 def create_table(create_table_sql):
-    """ create a table from the create_table_sql statement
-    :param conn: Connection object
-    :param create_table_sql: a CREATE TABLE statement
-    :return:
-    """
     try:
         conn = sqlite3.connect(database)
         c = conn.cursor()
@@ -116,36 +113,28 @@ def create_table(create_table_sql):
     except Error as e:
         print(e)
 
-
 def main():
-
-    sql_create_activity_table = """ CREATE TABLE IF NOT EXISTS activity (
-                                    user_id integer,
-                                    action text,
-                                    value text,
-                                    url text,
-                                    time text
-                                ); """
-
-    sql_create_id_table = """ CREATE TABLE IF NOT EXISTS user_ids (
-                                    id integer PRIMARY KEY,
-                                    date_created text
-                                ); """
-
-    #conn = create_connection(database)
     try:
         conn = sqlite3.connect(database)
-        #return conn
     except Error as e:
         print(e)
-    #return conn
-
     if conn is not None:
         print("Successful connection to database.")
-        print(conn)
-        # create
-        create_table(sql_create_activity_table)
-        create_table(sql_create_id_table)
+        # Create activity and id tables in database
+        sql_activity_table = """ CREATE TABLE IF NOT EXISTS activity (
+                                        user_id integer,
+                                        action text,
+                                        value text,
+                                        url text,
+                                        time text
+                                    ); """
+
+        sql_id_table = """ CREATE TABLE IF NOT EXISTS user_ids (
+                                        id integer PRIMARY KEY,
+                                        date_created text
+                                    ); """
+        create_table(sql_activity_table)
+        create_table(sql_id_table)
     else:
         print("Error! cannot create the database connection.")
 
