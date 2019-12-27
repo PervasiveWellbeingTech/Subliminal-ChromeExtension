@@ -17,6 +17,6 @@ This project requires an updated version of the Google Chrome browser. You can d
 
 ## Authors
 
-* **Pervasive Wellbeing Technology Lab*
+* **Pervasive Wellbeing Technology Lab**
 * **Jonathan Burkle** - *Initial setup and development*
 * **Marco Mora-Mendoza** - *Bluetooth link and hub; Server Logging; Bug Fixes*
