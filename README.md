@@ -1,6 +1,8 @@
 # Breathing Edges Chrome Extension
 
 Google Chrome extension that regulates breathing through entrainment. When activated, the edges of the browser change color and expand/contract at an interval that mimicks a human breath.
+The user can customize the color, opacity, and interval rate of the tool. 
+Adaptive mode allows the tool to pair with a sensor via bluetooth to turn on or off when certain biological measurement thresholds are met.
 
 ## Getting Started
 
