@@ -1,18 +1,38 @@
 'use strict';
-var max_bpm = 30;
+var server_address = "http://localhost:8080";
+var url = '';
+var user_id = null;
 
+function getTime()
+{
+  var today = new Date();
+  var date = (today.getMonth()+1)+'-'+today.getDate()+'-'+today.getFullYear();
+  var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  var dateTime = time + ' ' + date;
+  return dateTime
+}
+
+function post_server(action, status)
+{
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", server_address , true);
+  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  var message = '{"user_id": "' + String(user_id) + '", "Action" : "' + action + '", "New value" : "' + status + '", "url" : "' + url + '", "time" : "' + getTime() + '"}'
+  xhr.send(message);
+}
 
 // update enable checkbox
 function check_enable(e)
 {
-    // store value
-    chrome.storage.sync.set({
-        enabled: this.checked
-    }, update_status);
-    // update page
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {todo: "update"});
-    });
+  // store value
+  chrome.storage.sync.set({
+      enabled: this.checked
+  }, update_status);
+  // update page
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, {todo: "update"});
+  });
+  post_server("Changed activation", this.checked? 'Turn on' : 'Turn off')
 }
 
 function check_BTenable(e)
@@ -78,6 +98,9 @@ function change_color(e)
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         chrome.tabs.sendMessage(tabs[0].id, {todo: "update"});
     });
+    ///////////////
+    post_server("Changed color", this.value)
+    ///////////////
 }
 
 // update color box
@@ -126,13 +149,17 @@ function change_opacity(e)
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         chrome.tabs.sendMessage(tabs[0].id, {todo: "update"});
     });
+    ///////////////
+    post_server("Changed opacity", this.value/100)
+    ///////////////
 }
 
 // update breathing interval
 function change_interval(e)
 {
+    var max_bpm = 30;
     var reg = /^(\d+\.?\d*|\.\d+)$/;
-    if (reg.exec(this.value)) // check for valid text input
+    if (!isNaN(this.value) && reg.exec(this.value)) // check for valid text input
     {
       // Set maximum value
         if (this.value < 1) {
@@ -140,8 +167,7 @@ function change_interval(e)
         } else if(this.value > max_bpm) {
           this.value = max_bpm;
         }
-        var bpm_val = this.value;
-        var interval_val = 60 / bpm_val;
+        var interval_val = 60 / this.value;
         // store value
         chrome.storage.sync.set({
             interval: interval_val
@@ -151,7 +177,11 @@ function change_interval(e)
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
             chrome.tabs.sendMessage(tabs[0].id, {todo: "update"});
         });
+      ///////////////
+      post_server("Changed interval", this.value)
+      ///////////////
     }
+
 }
 
 /*
@@ -184,7 +214,7 @@ function restore_options()
 {
     // Defaults to enabled
     chrome.storage.sync.get({
-        enabled: true,
+        enabled: false,
         color: "#0080FF",
         opacity: 1.0,
         interval: 4,
@@ -207,6 +237,7 @@ function restore_options()
         color_style.innerHTML = ".color input:checked + .slider {background-color: " + items.color + ";}";
         document.querySelector('#range-value-bar').style.background = items.color;
         document.querySelector('#range-value-bar').style.setProperty('opacity', items.opacity);
+
         /*
         if (items.visibility)
         {
@@ -233,17 +264,70 @@ function update_status()
     setTimeout(function() {
         status.textContent = '';
     }, 750);
+    chrome.tabs.query({
+      active: true,               // Select active tabs
+      lastFocusedWindow: true     // In the current window
+      }, function(array_of_Tabs) {
+      // Since there can only be one active tab in one active window,
+      // the array has only one element
+      var tab = array_of_Tabs[0];
+      url = tab.url;
+    });
 }
 
 var color_style = document.createElement('style');
 //var visibility_style = document.createElement('style');
+
+function set_cookie(callback){
+  xhr.open("GET", server_address + '/getID', true);
+  xhr.send();
+  xhr.onreadystatechange = function() {
+    console.log("Received GET response")
+    if(this.readyState == 4 && this.status == 200){
+      console.log("return value:")
+      var content = xhr.responseText
+      if(content != '') {
+          callback(parseInt(content));
+      } else {
+          callback(null);
+      }
+    }
+  }
+}
+
+function check_cookie(){
+  var cookie = chrome.cookies.get({"url": "https://pervasivewellbeingtech.github.io/Subliminal-ChromeExtension/", "name": "Breathing Edges Extension Cookie"}, function(cookie) {
+    if (cookie == null) {
+      set_cookie(function(id){
+        if(id != null){
+          chrome.cookies.set({
+              "url": "https://pervasivewellbeingtech.github.io/Subliminal-ChromeExtension/",
+              "name": "Breathing Edges Extension Cookie",
+              "value": id.toString(),
+              "secure": true,
+              "expirationDate": 2553964244, // linux epoch time deadline
+              "sameSite": "no_restriction"
+          }, function (cookie) {
+            console.log("New cookie set with value: " + id.toString());
+          });
+        user_id = id
+        }
+      })
+    } else {
+      console.log("Cookie found with value: " + cookie.value.toString())
+      user_id = cookie.value
+    }
+  });
+}
 
 // execute when popup loaded
 document.addEventListener('DOMContentLoaded', function () {
     // restore previous options
     update_status();
     restore_options();
-
+    if(user_id == null){
+      check_cookie();
+    }
     // add listeners
     var enable_check = document.querySelector(".enable");
     enable_check.addEventListener('click', check_enable);
