@@ -19,4 +19,4 @@ This project requires an updated version of the Google Chrome browser. You can d
 
 Developed under the [**Pervasive Wellbeing Technology Lab**](http://med.stanford.edu/pervasivewellbeingtech.html)
 * **Jonathan Burkle** - *Initial setup and development*
-* **Marco Mora-Mendoza** - *Bluetooth link and hub; Server Logging; Bug Fixes*
+* **Marco Mora-Mendoza** - *Bluetooth link and hub; Server logging; Bug fixes*
