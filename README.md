@@ -1,4 +1,4 @@
-# Subliminal-ChromeExtension
+# Breathing Edges Chrome Extension
 
 Google Chrome extension that regulates breathing through entrainment. When activated, the edges of the browser change color and expand/contract at an interval that mimicks a human breath.
 
