@@ -4,6 +4,8 @@ Google Chrome extension that regulates breathing through entrainment. When activ
 The user can customize the color, opacity, and interval rate of the tool. 
 Adaptive mode allows the tool to pair with a sensor via bluetooth to turn on or off when certain biological measurement thresholds are met.
 
+![Screenshot of Breathing Edges adaptive mode website](../Images/BE_Interface.png)
+
 ## Getting Started
 
 The extension is available for download on the Google Chrome store through the following [link](https://chrome.google.com/webstore/detail/breathing-edges/bfdgeibniodkfndpedigokbjkffoaboc?fbclid=IwAR2xAAuKU682uMxKVfOiMegXmB47ibh72AprPQ61DGwR8LritvmorKvHkD0)
@@ -12,6 +14,7 @@ For development purposes, you can clone this repository to your local machine, m
 
 ## Prerequisites
 
+- Google Chrome
 This project requires an updated version of the Google Chrome browser. You can download and install it by following the instructions in this [link](https://support.google.com/chrome/answer/95346?co=GENIE.Platform%3DDesktop&hl=en)
 
 ## Files
