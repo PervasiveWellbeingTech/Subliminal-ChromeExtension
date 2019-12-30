@@ -21,7 +21,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         print(self.headers)
         print("<----- Request End -----\n")
 
-        # Response to id request
+        # Respond to id request
         if request_path == '/getID':
             self.send_response(200)
             self.send_header('Content-type','text/plain')
@@ -55,8 +55,8 @@ class RequestHandler(BaseHTTPRequestHandler):
     do_PUT = do_POST
     do_DELETE = do_GET
 
-# Searches user_ids table for largest value plus one
-# Adds this value to user_ids table and returns the value
+# Searches user_ids table for largest value
+# Adds this value + 1 to user_ids table and returns the incremented value
 # Returns 1 if no ids in table
 def get_new_user_id():
     try:
