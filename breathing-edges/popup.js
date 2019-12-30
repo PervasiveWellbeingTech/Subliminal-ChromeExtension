@@ -157,7 +157,6 @@ function change_interval(e)
       });
       // Log action
       post_server("Changed interval", this.value)
-      ///////////////
     }
 }
 
@@ -213,6 +212,7 @@ var color_style = document.createElement('style');
 
 // Ask server for new id
 function request_id(callback){
+  var xhr = new XMLHttpRequest();
   xhr.open("GET", server_address + '/getID', true);
   xhr.send();
   xhr.onreadystatechange = function() {
