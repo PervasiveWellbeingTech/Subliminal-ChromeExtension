@@ -6,14 +6,14 @@ Adaptive mode allows the tool to pair with a sensor via bluetooth to turn on or 
 
 For research purposes, we log the interactions that users have with the extension. The code for the server that allows for logging can be found [here.](https://github.com/PervasiveWellbeingTech/Subliminal-ChromeExtension-ServerLogger)
 
-[Screenshot of Breathing Edges extension]
+![Screenshot of Breathing Edges extension](https://github.com/PervasiveWellbeingTech/Subliminal-ChromeExtension/blob/master/Images/BE_Interface.png)
 
 ## Getting Started
 
-The extension is available for download on the Google Chrome store through the following [link](https://chrome.google.com/webstore/detail/breathing-edges/bfdgeibniodkfndpedigokbjkffoaboc?fbclid=IwAR2xAAuKU682uMxKVfOiMegXmB47ibh72AprPQ61DGwR8LritvmorKvHkD0)
+The extension is available for download on the Google Chrome store through the following [link.](https://chrome.google.com/webstore/detail/breathing-edges/bfdgeibniodkfndpedigokbjkffoaboc?fbclid=IwAR2xAAuKU682uMxKVfOiMegXmB47ibh72AprPQ61DGwR8LritvmorKvHkD0)
 
 For development purposes, you can clone this repository to your local machine, make changes, and then follow the instructions on the official [Google Chrome Extension documentation site](https://developer.chrome.com/extensions/getstarted) to test in your browser:
-1. Go to <chrome://extensions/>
+1. Go to <chrome://extensions>
 2. Click on "load unpacked" and select folder with scripts
 3. The extension will be downloaded to the browser
 
