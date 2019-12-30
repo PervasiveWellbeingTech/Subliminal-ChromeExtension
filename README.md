@@ -4,7 +4,7 @@ Google Chrome extension that regulates breathing through entrainment. When activ
 The user can customize the color, opacity, and interval rate of the tool. 
 Adaptive mode allows the tool to pair with a sensor via bluetooth to turn on or off when certain biological measurement thresholds are met.
 
-![Screenshot of Breathing Edges adaptive mode website](https://github.com/PervasiveWellbeingTech/Subliminal-ChromeExtension/tree/master/Images/BE_Interface.png?raw=true)
+![Screenshot of Breathing Edges adaptive mode website](../Images/BE_Interface.png?raw=true)
 
 ## Getting Started
 
