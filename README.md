@@ -23,6 +23,10 @@ For development purposes, you can clone this repository to your local machine, m
 
 This project requires an updated version of the Google Chrome browser. You can download and install it by following the instructions in this [link](https://support.google.com/chrome/answer/95346?co=GENIE.Platform%3DDesktop&hl=en)
 
+## Publishing and Updating the Extension
+
+Follow the instructions on [this page](https://developer.chrome.com/webstore/publish) to publish the Chrome Extension on the Google Chrome Web store. Additional information on updating the version is available. 
+
 ## Authors
 
 Developed under the [**Pervasive Wellbeing Technology Lab**](http://med.stanford.edu/pervasivewellbeingtech.html)
