@@ -25,7 +25,9 @@ This project requires an updated version of the Google Chrome browser. You can d
 
 ## Publishing and Updating the Extension
 
-Follow the instructions on [this page](https://developer.chrome.com/webstore/publish) to publish the Chrome Extension on the Google Chrome Web store. Additional information on updating the version is available. 
+Follow the instructions on [this page](https://developer.chrome.com/webstore/publish) to publish the Chrome Extension on the Google Chrome Web store. 
+
+To publish the extension on the Chrome web store, go to the [developer dashboard](https://chrome.google.com/webstore/developer/dashboard), sign-in or create an account, upload all the extension files, and click "Publish."
 
 ## Authors
 
