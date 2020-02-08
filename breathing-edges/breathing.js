@@ -18,7 +18,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 // update all options
 function update()
 {
-    console.log("Updating edges")
+    //console.log("Updating edges")
     // alert("in update");
     chrome.storage.sync.get({
         enabled: false,
